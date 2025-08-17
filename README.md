@@ -83,7 +83,7 @@ The application uses a JWT mechanism implemented from scratch. Only authorized *
    Authorization: Bearer <token>
    ```
 
-3. Without a valid token, **POST** requests will be denied.
+3. Without a valid token, POST requests will be denied.
 
 ## Endpoints API Documentation
 
@@ -93,7 +93,7 @@ The application uses a JWT mechanism implemented from scratch. Only authorized *
 List airports.
 
 #### POST api/airports
-add new airport (admin only).
+Add new airport (admin only).
 
 ### Routes Overview (api/routes)
 
@@ -101,4 +101,4 @@ add new airport (admin only).
 List possible routes from airport X to airport Y, or all routes if no parameters are provided.
 
 #### POST api/routes
-add new route (admin only).
+Add new route (admin only).
