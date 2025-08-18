@@ -4,17 +4,14 @@
 
 - [Overview](#overview)
 - [Setup](#setup)
-- [Summary](#summary-of-the-relationship-between-objects)
-- [Authentication](./documentation/AUTH-README.md#authentication)
-    - [Register](./documentation/AUTH-README.md#register)
-    - [Login](./documentation/AUTH-README.md#login)
-- [Endpoints API Documentation](./documentation/ENDPOINTS-README.md#endpoints-api-documentation)
-  - [Airports Overview (api/airports)](./documentation/ENDPOINTS-README.md#airports-overview-apiairports)
-    - [GET api/airports](./documentation/ENDPOINTS-README.md#get-apiairports)
-    - [POST api/airports](./documentation/ENDPOINTS-README.md#post-apiairports)
-  - [Routes Overview (api/routes)](./documentation/ENDPOINTS-README.md#routes-overview-apiroutes)
-    - [GET api/routes](./documentation/ENDPOINTS-README.md#put-apiroutes)
-    - [POST api/routes](./documentation/ENDPOINTS-README.md#delete-apiroutes)
+- [Authentication](#authentication)
+- [Endpoints API Documentation](#endpoints-api-documentation)
+  - [Airports Overview (api/airports)](#airports-overview-apiairports)
+    - [GET api/airports](#get-apiairports)
+    - [POST api/airports](#post-apiairports)
+  - [Routes Overview (api/routes)](#routes-overview-apiroutes)
+    - [GET api/routes](#get-apiroutes)
+    - [POST api/routes](#post-apiroutes)
 
 ## Overview
 
