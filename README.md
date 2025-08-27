@@ -5,6 +5,7 @@
 - [Overview](#overview)
 - [Setup](#setup)
 - [Authentication](#authentication)
+- [Entity–relationship Diagram](#Entity–relationship-diagram)
 - [Endpoints API Documentation](#endpoints-api-documentation)
   - [Airports Overview (api/airports)](#airports-overview-apiairports)
     - [GET api/airports](#get-apiairports)
@@ -81,6 +82,10 @@ The application uses a JWT mechanism implemented from scratch. Only authorized *
    ```
 
 3. Without a valid token, POST requests will be denied.
+
+### Entity–relationship Diagram
+
+![Diagrama ER](./docs/dbdiagram.drawio.png)
 
 ## Endpoints API Documentation
 
