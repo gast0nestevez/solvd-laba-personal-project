@@ -82,3 +82,14 @@ export const createRoute = (req, res) => {
   routes.push(newRoute)
   res.status(201).json(newRoute)
 }
+
+export const deleteRoute = (req, res) => {
+  const { id } = req.params
+  const routeId = parseInt(id)
+
+  const index = routes.findIndex(a => a.id === routeId)
+  if (index === -1) return res.status(404).json({ message: "Route not found" })
+
+  const deletedRoute = routes.splice(index, 1)[0]
+  res.json({ message: "Route deleted", route: deletedRoute })
+}
