@@ -1,4 +1,4 @@
-import { airports } from "../models/aiport.model.js"
+import { airports } from "../models/airport.model.js"
 
 export const getAirports = (req, res) => {
   res.json(airports)

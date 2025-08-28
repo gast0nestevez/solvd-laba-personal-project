@@ -38,5 +38,23 @@ export const airports = [
     country: 'France',
     latitude: 49.0097,
     longitude: 2.5479
+  }),
+  new Airport({
+    id: 4,
+    code: 'DXB',
+    name: 'Dubai International Airport',
+    city: 'Dubai',
+    country: 'UAE',
+    latitude: 25.2532,
+    longitude: 55.3657
+  }),
+  new Airport({
+    id: 5,
+    code: 'FRA',
+    name: 'Frankfurt Airport',
+    city: 'Frankfurt',
+    country: 'Germany',
+    latitude: 50.0379,
+    longitude: 8.5622
   })
 ]
