@@ -10,9 +10,15 @@
   - [Airports Overview (api/airports)](#airports-overview-apiairports)
     - [GET api/airports](#get-apiairports)
     - [POST api/airports](#post-apiairports)
+    - [DELETE api/airports](#delete-apiairports)
+  - [Airlines Overview (api/airlines)](#airlines-overview-apiairlines)
+    - [GET api/airlines](#get-apiairlines)
+    - [POST api/airlines](#post-apiairlines)
+    - [DELETE api/airlines](#delete-apiairlines)
   - [Routes Overview (api/routes)](#routes-overview-apiroutes)
     - [GET api/routes](#get-apiroutes)
     - [POST api/routes](#post-apiroutes)
+    - [DELETE api/routes](#delete-apiroutes)
 
 ## Overview
 
@@ -97,6 +103,20 @@ List airports.
 #### POST api/airports
 Add new airport (admin only).
 
+#### Delete api/airports
+Delete an airport by id (admin only).
+
+### Airlines Overview (api/airlines)
+
+#### GET api/airlines
+List airlines.
+
+#### POST api/airlines
+Add new airline (admin only).
+
+#### Delete api/airlines
+Delete an airline by id (admin only).
+
 ### Routes Overview (api/routes)
 
 #### GET api/routes?source=X&dest=Y
@@ -104,3 +124,6 @@ List possible routes from airport X to airport Y, or all routes if no parameters
 
 #### POST api/routes
 Add new route (admin only).
+
+#### Delete api/routes
+Delete a route by id (admin only).
