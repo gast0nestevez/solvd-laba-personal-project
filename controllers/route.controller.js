@@ -13,8 +13,8 @@ const buildGraph = () => {
   return graph
 }
 
-// BFS to find all paths (limited by maxStops to avoid infinite loops)
-const findPaths = (graph, originId, destId, maxStops = 3) => {
+// BFS
+const findPaths = (graph, originId, destId, maxStops = Object.keys(graph).length) => {
   const paths = []
   const queue = [{ path: [originId], totalDuration: 0, totalPrice: 0, routeList: [] }]
 
@@ -30,7 +30,7 @@ const findPaths = (graph, originId, destId, maxStops = 3) => {
     if (!graph[last]) continue
 
     for (const r of graph[last]) {
-      if (!path.includes(r.destId) && path.length <= maxStops + 1) {
+      if (!path.includes(r.destId) && path.length < maxStops) {
         queue.push({
           path: [...path, r.destId],
           totalDuration: totalDuration + r.duration,
