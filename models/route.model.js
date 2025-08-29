@@ -1,7 +1,7 @@
 export class Route {
-  constructor({ id, sourceId, destId, duration, price, airlineId }) {
+  constructor({ id, originId, destId, duration, price, airlineId }) {
     this.id = id
-    this.sourceId = sourceId  // Airport id
+    this.originId = originId  // Airport id
     this.destId = destId      // Airport id
     this.duration = duration  // minutes
     this.price = price
@@ -13,7 +13,7 @@ export class Route {
 export const routes = [
   new Route({
     id: 1,
-    sourceId: 1,   // JFK
+    originId: 1,   // JFK
     destId: 2,     // LHR
     duration: 420,
     price: 500,
@@ -21,7 +21,7 @@ export const routes = [
   }),
   new Route({
     id: 2,
-    sourceId: 1,   // JFK
+    originId: 1,   // JFK
     destId: 3,     // CDG
     duration: 435,
     price: 450,
@@ -29,7 +29,7 @@ export const routes = [
   }),
   new Route({
     id: 3,
-    sourceId: 3,   // CDG
+    originId: 3,   // CDG
     destId: 2,     // LHR
     duration: 75,
     price: 120,
@@ -37,7 +37,7 @@ export const routes = [
   }),
   new Route({
     id: 4,
-    sourceId: 2,   // LHR
+    originId: 2,   // LHR
     destId: 4,     // DXB
     duration: 420,
     price: 600,
@@ -45,7 +45,7 @@ export const routes = [
   }),
   new Route({
     id: 5,
-    sourceId: 5,
+    originId: 5,
     destId: 3,
     duration: 70,
     price: 110,
@@ -53,7 +53,7 @@ export const routes = [
   }),
   new Route({
     id: 6,
-    sourceId: 2,
+    originId: 2,
     destId: 1,
     duration: 430,
     price: 400,
@@ -61,7 +61,7 @@ export const routes = [
   }),
   new Route({
     id: 7,
-    sourceId: 3,
+    originId: 3,
     destId: 4,
     duration: 235,
     price: 230,

@@ -7,16 +7,16 @@ const buildGraph = () => {
   
   // Each airport ID maps to an array of routes originating from it
   routes.forEach(r => {
-    if (!graph[r.sourceId]) graph[r.sourceId] = []
-    graph[r.sourceId].push(r)
+    if (!graph[r.originId]) graph[r.originId] = []
+    graph[r.originId].push(r)
   })
   return graph
 }
 
 // BFS to find all paths (limited by maxStops to avoid infinite loops)
-const findPaths = (graph, sourceId, destId, maxStops = 3) => {
+const findPaths = (graph, originId, destId, maxStops = 3) => {
   const paths = []
-  const queue = [{ path: [sourceId], totalDuration: 0, totalPrice: 0, routeList: [] }]
+  const queue = [{ path: [originId], totalDuration: 0, totalPrice: 0, routeList: [] }]
 
   while (queue.length > 0) {
     const { path, totalDuration, totalPrice, routeList } = queue.shift()
@@ -44,22 +44,21 @@ const findPaths = (graph, sourceId, destId, maxStops = 3) => {
   return paths
 }
 
-// /api/routes?source=1&destination=2
 export const getRoutes = (req, res) => {
-  const { source, dest } = req.query
+  const { origin, dest } = req.query
 
-  if (source && dest) {
-    const sourceId = parseInt(source)
+  if (origin && dest) {
+    const originId = parseInt(origin)
     const destId = parseInt(dest)
 
     // Filter direct routes first
     const directRoutes = routes.filter(
-      r => r.sourceId === sourceId && r.destId === destId
+      r => r.originId === originId && r.destId === destId
     )
     
     // Build graph and find multi-leg routes
     const graph = buildGraph()
-    const multiLegRoutes = findPaths(graph, sourceId, destId)
+    const multiLegRoutes = findPaths(graph, originId, destId)
 
     return res.json({
       directRoutes,

@@ -119,7 +119,7 @@ Delete an airline by id (admin only).
 
 ### Routes Overview (api/routes)
 
-#### GET api/routes?source=X&dest=Y
+#### GET api/routes?origin=X&dest=Y
 List possible routes from airport X to airport Y, or all routes if no parameters are provided.
 
 #### POST api/routes
