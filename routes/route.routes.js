@@ -6,6 +6,6 @@ const router = Router()
 
 router.get('/', getRoutes)
 router.post('/', adminOnly, createRoute)
-router.delete('/', adminOnly, createRoute)
+router.delete('/', adminOnly, deleteRoute)
 
 export default router
