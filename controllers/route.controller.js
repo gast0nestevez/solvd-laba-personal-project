@@ -1,4 +1,5 @@
 import { routes } from '../models/route.model.js'
+import { deleteEntity } from '../helpers/deleteEntity.js'
 
 const buildGraph = () => {
   const graph = {}
@@ -84,12 +85,8 @@ export const createRoute = (req, res) => {
 }
 
 export const deleteRoute = (req, res) => {
-  const { id } = req.params
-  const routeId = parseInt(id)
-
-  const index = routes.findIndex(a => a.id === routeId)
-  if (index === -1) return res.status(404).json({ message: "Route not found" })
-
-  const deletedRoute = routes.splice(index, 1)[0]
-  res.json({ message: "Route deleted", route: deletedRoute })
+  const id = req.params.id
+  const result = deleteEntity(routes, id)
+  if (result.error) return res.status(404).json({ message: result.message })
+  res.json({ message: "Route deleted", route: result.deletedEntity })
 }
