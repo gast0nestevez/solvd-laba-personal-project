@@ -1,6 +1,7 @@
 import { routes } from '../models/route.model.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
 import { createEntity } from '../helpers/createEntity.js'
+import pool from '../utils/db.js'
 
 const buildGraph = () => {
   const graph = {}
@@ -44,40 +45,72 @@ const findPaths = (graph, originId, destId, maxStops = Object.keys(graph).length
   return paths
 }
 
-export const getRoutes = (req, res) => {
+export const getRoutes = async (req, res) => {
   const { origin, dest } = req.query
-
-  if (origin && dest) {
-    const originId = parseInt(origin)
-    const destId = parseInt(dest)
-
-    // Filter direct routes first
-    const directRoutes = routes.filter(
-      r => r.originId === originId && r.destId === destId
-    )
-    
-    // Build graph and find multi-leg routes
-    const graph = buildGraph()
-    const multiLegRoutes = findPaths(graph, originId, destId)
-
-    return res.json({
-      directRoutes,
-      multiLegRoutes
-    })
+  
+  try {
+    const result = await pool.query('SELECT * FROM routes ORDER BY id')
+    const routes = result.rows
+  
+    if (origin && dest) {
+      const originId = parseInt(origin)
+      const destId = parseInt(dest)
+  
+      // Filter direct routes first
+      const directRoutes = routes.filter(
+        r => r.origin_id === originId && r.dest_id === destId
+      )
+      
+      // Build graph and find multi-leg routes
+      const graph = buildGraph()
+      const multiLegRoutes = findPaths(graph, originId, destId)
+  
+      return res.json({
+        directRoutes,
+        multiLegRoutes
+      })
+    }
+  
+    // Return all routes if no query provided
+    res.json(routes)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ error: 'Error when fetching routes' })
   }
-
-  // Return all routes if no query provided
-  res.json(routes)
 }
 
-export const createRoute = (req, res) => {
-  const newRoute = createEntity(routes, req.body)
-  res.status(201).json(newRoute)
+export const createRoute = async (req, res) => {
+  const { name, originId, destId, duration, price, airlineId } = req.body
+  
+  try {
+    const result = await pool.query(
+      `INSERT INTO routes (origin_id, dest_id, duration, price, airline_id)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING *`,
+      [name, originId, destId, duration, price, airlineId]
+    )
+
+    res.status(201).json(result.rows[0])
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Error when inserting route' })
+  }
 }
 
-export const deleteRoute = (req, res) => {
-  const id = req.params.id
-  const result = deleteEntity(routes, id)
-  if (result.error) return res.status(404).json({ message: result.message })
-  res.json({ message: 'Route deleted', route: result.deletedEntity })
+export const deleteRoute = async (req, res) => {
+  const id = parseInt(req.params.id)
+
+  try {
+    const result = await pool.query(
+      'DELETE FROM routes WHERE id = $1 RETURNING *',
+      [id]
+    )
+
+    if (result.rowCount === 0) return res.status(404).json({ message: 'Route not found' })
+
+    res.json({ message: 'Route deleted', route: result.rows[0] })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Error when removing route' })
+  }
 }
