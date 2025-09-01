@@ -1,8 +1,7 @@
-import { airlines } from '../models/airline.model.js'
-import { deleteEntity } from '../helpers/deleteEntity.js'
-import { createEntity } from '../helpers/createEntity.js'
 import pool from '../utils/db.js'
 import { getAll } from '../helpers/getAll.js'
+import { createEntity } from '../helpers/createEntity.js'
+import { deleteEntity } from '../helpers/deleteEntity.js'
 
 export const getAirlines = async (req, res) => {
   try {
@@ -17,17 +16,14 @@ export const createAirline = async (req, res) => {
   const { name } = req.body
   
   try {
-    const result = await pool.query(
-      `INSERT INTO airlines (name)
-       VALUES ($1)
-       RETURNING *`,
+    const newAirline = await createEntity(
+      'airlines',
+      ['name'],
       [name]
     )
-
-    res.status(201).json(result.rows[0])
+    res.status(201).json(newAirline)
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Error when inserting airline' })
+    res.status(500).json({ error: err.message })
   }
 }
 
@@ -35,16 +31,11 @@ export const deleteAirline = async (req, res) => {
   const id = parseInt(req.params.id)
 
   try {
-    const result = await pool.query(
-      'DELETE FROM airlines WHERE id = $1 RETURNING *',
-      [id]
-    )
+    const airline = await deleteEntity('airlines', id)
+    if (!airline) return res.status(404).json({ message: 'Airline not found' })
 
-    if (result.rowCount === 0) return res.status(404).json({ message: 'Airline not found' })
-
-    res.json({ message: 'Airline deleted', airline: result.rows[0] })
+    res.json({ message: 'Airline deleted', airline })
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Error when removing airline' })
+    res.status(500).json({ error: err.message })
   }
 }

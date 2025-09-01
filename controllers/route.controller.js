@@ -1,7 +1,7 @@
-import { deleteEntity } from '../helpers/deleteEntity.js'
-import { createEntity } from '../helpers/createEntity.js'
 import pool from '../utils/db.js'
 import { getAll } from '../helpers/getAll.js'
+import { createEntity } from '../helpers/createEntity.js'
+import { deleteEntity } from '../helpers/deleteEntity.js'
 
 const buildGraph = (routes) => {
   const graph = {}
@@ -78,20 +78,17 @@ export const getRoutes = async (req, res) => {
 }
 
 export const createRoute = async (req, res) => {
-  const { name, originId, destId, duration, price, airlineId } = req.body
+  const { origin_id, dest_id, duration, price, airline_id } = req.body
   
   try {
-    const result = await pool.query(
-      `INSERT INTO routes (origin_id, dest_id, duration, price, airline_id)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
-      [name, originId, destId, duration, price, airlineId]
+    const newRoute = await createEntity(
+      'routes',
+      ['origin_id', 'dest_id', 'duration', 'price', 'airline_id'],
+      [origin_id, dest_id, duration, price, airline_id]
     )
-
-    res.status(201).json(result.rows[0])
+    res.status(201).json(newRoute)
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Error when inserting route' })
+    res.status(500).json({ error: err.message })
   }
 }
 
@@ -99,16 +96,12 @@ export const deleteRoute = async (req, res) => {
   const id = parseInt(req.params.id)
 
   try {
-    const result = await pool.query(
-      'DELETE FROM routes WHERE id = $1 RETURNING *',
-      [id]
-    )
+    const route = await deleteEntity('routes', id)
+    if (!route) return res.status(404).json({ message: 'Route not found' })
 
-    if (result.rowCount === 0) return res.status(404).json({ message: 'Route not found' })
-
-    res.json({ message: 'Route deleted', route: result.rows[0] })
+    res.json({ message: 'Route deleted', route })
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Error when removing route' })
+    res.status(500).json({ error: err.message })
   }
 }
+

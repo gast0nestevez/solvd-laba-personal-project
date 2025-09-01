@@ -1,8 +1,7 @@
-import { airports } from '../models/airport.model.js'
-import { deleteEntity } from '../helpers/deleteEntity.js'
-import { createEntity } from '../helpers/createEntity.js'
 import pool from '../utils/db.js'
 import { getAll } from '../helpers/getAll.js'
+import { createEntity } from '../helpers/createEntity.js'
+import { deleteEntity } from '../helpers/deleteEntity.js'
 
 export const getAirports = async (req, res) => {
   try {
@@ -17,17 +16,14 @@ export const createAirport = async (req, res) => {
   const { code, name, city, country, latitude, longitude } = req.body
   
   try {
-    const result = await pool.query(
-      `INSERT INTO airports (code, name, city, country, latitude, longitude)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
+    const newAirport = await createEntity(
+      'airports',
+      ['code', 'name', 'city', 'country', 'latitude', 'longitude'],
       [code, name, city, country, latitude, longitude]
     )
-
-    res.status(201).json(result.rows[0])
+    res.status(201).json(newAirport)
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Error when inserting airport' })
+    res.status(500).json({ error: err.message })
   }
 }
 
@@ -35,16 +31,12 @@ export const deleteAirport = async (req, res) => {
   const id = parseInt(req.params.id)
 
   try {
-    const result = await pool.query(
-      'DELETE FROM airports WHERE id = $1 RETURNING *',
-      [id]
-    )
+    const airport = await deleteEntity('airports', id)
+    if (!airport) return res.status(404).json({ message: 'Airport not found' })
 
-    if (result.rowCount === 0) return res.status(404).json({ message: 'Airport not found' })
-
-    res.json({ message: 'Airport deleted', airport: result.rows[0] })
+    res.json({ message: 'Airport deleted', airport })
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Error when removing airport' })
+    res.status(500).json({ error: err.message })
   }
 }
+
