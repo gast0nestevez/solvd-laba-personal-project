@@ -1,15 +1,15 @@
-import { routes } from '../models/route.model.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
 import { createEntity } from '../helpers/createEntity.js'
 import pool from '../utils/db.js'
+import { getAll } from '../helpers/getAll.js'
 
-const buildGraph = () => {
+const buildGraph = (routes) => {
   const graph = {}
-  
+
   // Each airport ID maps to an array of routes originating from it
   routes.forEach(r => {
-    if (!graph[r.originId]) graph[r.originId] = []
-    graph[r.originId].push(r)
+    if (!graph[r.origin_id]) graph[r.origin_id] = []
+    graph[r.origin_id].push(r)
   })
   return graph
 }
@@ -31,11 +31,11 @@ const findPaths = (graph, originId, destId, maxStops = Object.keys(graph).length
     if (!graph[last]) continue
 
     for (const r of graph[last]) {
-      if (!path.includes(r.destId) && path.length < maxStops) {
+      if (!path.includes(r.dest_id) && path.length < maxStops) {
         queue.push({
-          path: [...path, r.destId],
-          totalDuration: totalDuration + r.duration,
-          totalPrice: totalPrice + r.price,
+          path: [...path, r.dest_id],
+          totalDuration: totalDuration + parseInt(r.duration),
+          totalPrice: totalPrice + parseFloat(r.price),
           routeList: [...routeList, r]
         })
       }
@@ -61,7 +61,7 @@ export const getRoutes = async (req, res) => {
       )
       
       // Build graph and find multi-leg routes
-      const graph = buildGraph()
+      const graph = buildGraph(routes)
       const multiLegRoutes = findPaths(graph, originId, destId)
   
       return res.json({
