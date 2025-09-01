@@ -1,11 +1,11 @@
 export class Route {
   constructor({ id, originId, destId, duration, price, airlineId }) {
     this.id = id
-    this.originId = originId  // Airport id
-    this.destId = destId      // Airport id
-    this.duration = duration  // minutes
+    this.originId = originId
+    this.destId = destId
+    this.duration = duration
     this.price = price
-    this.airline = airlineId    // Airline id
+    this.airlineId = airlineId
   }
 }
 
@@ -21,27 +21,27 @@ export const routes = [
   }),
   new Route({
     id: 2,
-    originId: 1,   // JFK
-    destId: 3,     // CDG
+    originId: 1,
+    destId: 3,
     duration: 435,
     price: 450,
-    airlineId: 4  // Lufthansa
+    airlineId: 4
   }),
   new Route({
     id: 3,
-    originId: 3,   // CDG
-    destId: 2,     // LHR
+    originId: 3,
+    destId: 2,
     duration: 75,
     price: 120,
-    airlineId: 5  // Emirates
+    airlineId: 5
   }),
   new Route({
     id: 4,
-    originId: 2,   // LHR
-    destId: 4,     // DXB
+    originId: 2,
+    destId: 4,
     duration: 420,
     price: 600,
-    airlineId: 5   // Emirates
+    airlineId: 5
   }),
   new Route({
     id: 5,
@@ -63,6 +63,14 @@ export const routes = [
     id: 7,
     originId: 3,
     destId: 4,
+    duration: 235,
+    price: 230,
+    airlineId: 4
+  }),
+  new Route({
+    id: 8,
+    originId: 4,
+    destId: 5,
     duration: 235,
     price: 230,
     airlineId: 4
