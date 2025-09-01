@@ -2,14 +2,14 @@ import { airlines } from '../models/airline.model.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
 import { createEntity } from '../helpers/createEntity.js'
 import pool from '../utils/db.js'
+import { getAll } from '../helpers/getAll.js'
 
 export const getAirlines = async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM airlines ORDER BY id')
-    res.json(result.rows)
+    const airlines = await getAll('airlines')
+    res.json(airlines)
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Error when fetching airlines' })
+    res.status(500).json({ error: err.message })
   }
 }
 

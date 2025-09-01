@@ -49,8 +49,7 @@ export const getRoutes = async (req, res) => {
   const { origin, dest } = req.query
   
   try {
-    const result = await pool.query('SELECT * FROM routes ORDER BY id')
-    const routes = result.rows
+    const routes = await getAll('routes')
   
     if (origin && dest) {
       const originId = parseInt(origin)
@@ -74,8 +73,7 @@ export const getRoutes = async (req, res) => {
     // Return all routes if no query provided
     res.json(routes)
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ error: 'Error when fetching routes' })
+    res.status(500).json({ error: err.message })
   }
 }
 
