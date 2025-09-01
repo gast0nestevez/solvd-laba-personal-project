@@ -1,4 +1,3 @@
-import pool from '../utils/db.js'
 import { getAll } from '../helpers/getAll.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
