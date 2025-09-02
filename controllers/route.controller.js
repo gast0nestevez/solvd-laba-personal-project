@@ -1,6 +1,7 @@
 import { getAll } from '../helpers/getAll.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
+import { validateRoute } from '../helpers/validations.js'
 
 const buildGraph = (routes) => {
   const graph = {}
@@ -80,6 +81,7 @@ export const createRoute = async (req, res) => {
   const { origin_id, dest_id, duration, price, airline_id } = req.body
   
   try {
+    validateRoute(origin_id, dest_id, duration, price, airline_id)
     const newRoute = await createEntity(
       'routes',
       ['origin_id', 'dest_id', 'duration', 'price', 'airline_id'],
@@ -103,4 +105,3 @@ export const deleteRoute = async (req, res) => {
     res.status(500).json({ error: err.message })
   }
 }
-

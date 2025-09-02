@@ -1,6 +1,7 @@
 import { getAll } from '../helpers/getAll.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
+import { validateAirline } from '../helpers/validations.js'
 
 export const getAirlines = async (req, res) => {
   try {
@@ -15,6 +16,7 @@ export const createAirline = async (req, res) => {
   const { name } = req.body
   
   try {
+    validateAirline(name)
     const newAirline = await createEntity(
       'airlines',
       ['name'],

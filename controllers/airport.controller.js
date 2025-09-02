@@ -1,6 +1,7 @@
 import { getAll } from '../helpers/getAll.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
+import { validateAirport } from '../helpers/validations.js'
 
 export const getAirports = async (req, res) => {
   try {
@@ -15,6 +16,7 @@ export const createAirport = async (req, res) => {
   const { code, name, city, country, latitude, longitude } = req.body
   
   try {
+    validateAirport(code, name, city, country, latitude, longitude)
     const newAirport = await createEntity(
       'airports',
       ['code', 'name', 'city', 'country', 'latitude', 'longitude'],
@@ -38,4 +40,3 @@ export const deleteAirport = async (req, res) => {
     res.status(500).json({ error: err.message })
   }
 }
-
