@@ -5,6 +5,7 @@
 DROP TABLE IF EXISTS routes CASCADE;
 DROP TABLE IF EXISTS airlines CASCADE;
 DROP TABLE IF EXISTS airports CASCADE;
+DROP TABLE IF EXISTS admins CASCADE;
 
 CREATE TABLE airports (
   id SERIAL PRIMARY KEY,
@@ -35,6 +36,12 @@ CREATE TABLE routes (
   CONSTRAINT chk_different_airports CHECK (origin_id <> dest_id),
   CONSTRAINT chk_duration_positive CHECK (duration > 0),
   CONSTRAINT chk_price_positive CHECK (price > 0)
+);
+
+CREATE TABLE admins (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL
 );
 
 -- Useful indexes

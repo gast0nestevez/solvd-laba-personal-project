@@ -1,28 +1,10 @@
 import { Router } from 'express'
-import dotenv from 'dotenv'
-import { createToken } from '../utils/jwt.js'
-
-dotenv.config()
+import { adminOnly } from '../middleware/adminOnly.js'
+import { register, login } from '../controllers/auth.controller.js'
 
 const router = Router()
 
-router.post('/token', (req, res) => {
-  const { username, password } = req.body || {}
-
-  if (username !== process.env.ADMIN_USERNAME ||
-    password !== process.env.ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Invalid credentials' })
-  }
-
-  const token = createToken(
-    { sub: username, role: 'admin' },
-    {
-      secret: process.env.JWT_SECRET,
-      expiresInSeconds: parseInt(process.env.JWT_EXPIRES_IN || '3600')
-    }
-  )
-
-  res.json({ token })
-})
+router.post('/register', adminOnly, register)
+router.post('/login', login)
 
 export default router

@@ -65,7 +65,9 @@ This project can be especially useful for applications like virtual travel agent
 
 ## Authentication
 
-The application uses a JWT mechanism implemented from scratch. Only authorized **admins** can add or modify resources (airports, routes).
+The application uses a JWT-based mechanism implemented from scratch. Only authenticated **admins** can create, update or delete resources.
+- The `/register` endpoint is restricted to admins and is used to create new admin accounts.
+- The `/login` endpoint validates credentials and returns a Bearer token that must be included in the `Authorization` header for protected routes.
 
 ### How it works:
 
