@@ -66,30 +66,8 @@ This project can be especially useful for applications like virtual travel agent
 ## Authentication
 
 The application uses a JWT-based mechanism implemented from scratch. Only authenticated **admins** can create, update or delete resources.
-- The `/register` endpoint is restricted to admins and is used to create new admin accounts.
-- The `/login` endpoint validates credentials and returns a Bearer token that must be included in the `Authorization` header for protected routes.
-
-### How it works:
-
-1. Obtain a token via:
-
-   ```
-   POST /api/auth/token
-   ```
-
-   with body:
-
-   ```json
-   { "username": "admin", "password": "supersecret" }
-   ```
-
-2. Use the returned JWT in the `Authorization` header:
-
-   ```
-   Authorization: Bearer <token>
-   ```
-
-3. Without a valid token, POST requests will be denied.
+- The `POST /register` endpoint is restricted to admins and is used to create new admin accounts.
+- The `POST /login` endpoint validates credentials and returns a Bearer token that must be included in the `Authorization` header for protected routes.
 
 ## Database Schema
 
