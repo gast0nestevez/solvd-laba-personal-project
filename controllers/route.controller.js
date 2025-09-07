@@ -13,14 +13,14 @@ export const getRoutes = async (req, res) => {
 }
 
 export const createRoute = async (req, res) => {
-  const { origin_id, dest_id, duration, price, airline_id } = req.body
+  const { originId, destinationId, duration, price, airlineId } = req.body
   
   try {
-    validateRoute(origin_id, dest_id, duration, price, airline_id)
+    validateRoute(originId, destinationId, duration, price, airlineId)
     const newRoute = await createEntity(
       'routes',
-      ['origin_id', 'dest_id', 'duration', 'price', 'airline_id'],
-      [origin_id, dest_id, duration, price, airline_id]
+      ['origin_id', 'destination_id', 'duration', 'price', 'airline_id'],
+      [originId, destinationId, duration, price, airlineId]
     )
     res.status(201).json(newRoute)
   } catch (err) {

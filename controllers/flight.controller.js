@@ -16,7 +16,7 @@ const buildGraph = (routes) => {
 }
 
 // BFS
-const findPaths = (graph, originId, destId, maxStops = Object.keys(graph).length) => {
+const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph).length) => {
   const paths = []
   const queue = [{ path: [originId], totalDuration: 0, totalPrice: 0, routeList: [] }]
 
@@ -24,7 +24,7 @@ const findPaths = (graph, originId, destId, maxStops = Object.keys(graph).length
     const { path, totalDuration, totalPrice, routeList } = queue.shift()
     const last = path[path.length - 1]
 
-    if (last === destId && routeList.length > 1) {
+    if (last === destinationId && routeList.length > 1) {
       paths.push({ path, totalDuration, totalPrice, routeList })
       continue
     }
@@ -32,9 +32,9 @@ const findPaths = (graph, originId, destId, maxStops = Object.keys(graph).length
     if (!graph[last]) continue
 
     for (const r of graph[last]) {
-      if (!path.includes(r.dest_id) && path.length < maxStops) {
+      if (!path.includes(r.destination_id) && path.length < maxStops) {
         queue.push({
-          path: [...path, r.dest_id],
+          path: [...path, r.destination_id],
           totalDuration: totalDuration + parseInt(r.duration),
           totalPrice: totalPrice + parseFloat(r.price),
           routeList: [...routeList, r]
@@ -47,13 +47,13 @@ const findPaths = (graph, originId, destId, maxStops = Object.keys(graph).length
 }
 
 export const getFlights = async (req, res) => {
-  const { origin, dest } = req.query
+  const { origin, destination } = req.query
   
   try {
     // Case 1: return all flights if no query provided
-    if (!origin || !dest) {
+    if (!origin || !destination) {
       const result = await pool.query(`
-        SELECT f.id AS flight_id, r.origin_id, r.dest_id, 
+        SELECT f.id AS flight_id, r.origin_id, r.destination_id, 
                f.departure_time, f.arrival_time, r.price, r.airline_id
         FROM flights f
         JOIN routes r ON f.route_id = r.id
@@ -64,13 +64,13 @@ export const getFlights = async (req, res) => {
     // Case 2: look for direct flights first
     const direct = await pool.query(
       `
-      SELECT f.id AS flight_id, r.origin_id, r.dest_id, 
+      SELECT f.id AS flight_id, r.origin_id, r.destination_id, 
              f.departure_time, f.arrival_time, r.price, r.airline_id
       FROM flights f
       JOIN routes r ON f.route_id = r.id
-      WHERE r.origin_id = $1 AND r.dest_id = $2
+      WHERE r.origin_id = $1 AND r.destination_id = $2
       `,
-      [origin, dest]
+      [origin, destination]
     )
     if (direct.rows.length > 0) return res.json({ type: 'direct', flights: direct.rows })
   

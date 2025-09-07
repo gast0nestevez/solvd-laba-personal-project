@@ -26,15 +26,15 @@ CREATE TABLE airlines (
 CREATE TABLE routes (
   id SERIAL PRIMARY KEY,
   origin_id INT NOT NULL,
-  dest_id INT NOT NULL,
+  destination_id INT NOT NULL,
   duration INT NOT NULL,
   price NUMERIC(10,2) NOT NULL,
   airline_id INT NOT NULL,
 
   CONSTRAINT fk_origin FOREIGN KEY (origin_id) REFERENCES airports(id) ON DELETE CASCADE,
-  CONSTRAINT fk_destination FOREIGN KEY (dest_id) REFERENCES airports(id) ON DELETE CASCADE,
+  CONSTRAINT fk_destination FOREIGN KEY (destination_id) REFERENCES airports(id) ON DELETE CASCADE,
   CONSTRAINT fk_airline FOREIGN KEY (airline_id) REFERENCES airlines(id) ON DELETE CASCADE,
-  CONSTRAINT chk_different_airports CHECK (origin_id <> dest_id),
+  CONSTRAINT chk_different_airports CHECK (origin_id <> destination_id),
   CONSTRAINT chk_duration_positive CHECK (duration > 0),
   CONSTRAINT chk_price_positive CHECK (price > 0)
 );
@@ -57,4 +57,4 @@ CREATE TABLE admins (
 -- Useful indexes
 CREATE INDEX idx_routes_airline ON routes(airline_id);
 CREATE INDEX idx_routes_origin ON routes(origin_id);
-CREATE INDEX idx_routes_destination ON routes(dest_id);
+CREATE INDEX idx_routes_destination ON routes(destination_id);
