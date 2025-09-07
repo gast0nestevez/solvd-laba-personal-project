@@ -3,6 +3,7 @@
 
 -- Drop existing tables if they exist (for clean setup)
 DROP TABLE IF EXISTS routes CASCADE;
+DROP TABLE IF EXISTS flights CASCADE;
 DROP TABLE IF EXISTS airlines CASCADE;
 DROP TABLE IF EXISTS airports CASCADE;
 DROP TABLE IF EXISTS admins CASCADE;
@@ -36,6 +37,15 @@ CREATE TABLE routes (
   CONSTRAINT chk_different_airports CHECK (origin_id <> dest_id),
   CONSTRAINT chk_duration_positive CHECK (duration > 0),
   CONSTRAINT chk_price_positive CHECK (price > 0)
+);
+
+CREATE TABLE flights (
+  id SERIAL PRIMARY KEY,
+  route_id INT NOT NULL,
+  departure_time INT NOT NULL,
+  arrival_time INT NOT NULL,
+
+  CONSTRAINT fk_route FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE
 );
 
 CREATE TABLE admins (
