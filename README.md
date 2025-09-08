@@ -19,7 +19,7 @@
     - [GET api/routes](#get-apiroutes)
     - [POST api/routes](#post-apiroutes)
     - [DELETE api/routes](#delete-apiroutes)
-  - [Flights Overview (api/flights)](#flights-overview-apiroutes)
+  - [Flights Overview (api/flights)](#flights-overview-apiflights)
     - [GET api/flights](#get-apiflights)
     - [POST api/flights](#post-apiflights)
     - [DELETE api/flights](#delete-apiflights)
@@ -82,36 +82,36 @@ The application uses a JWT-based mechanism implemented from scratch. Only authen
 ### Airports Overview (api/airports)
 
 #### GET api/airports
-List airports.
+List all airports.
 
 #### POST api/airports
 Add new airport (admin only).
 
-#### Delete api/airports
+#### DELETE api/airports
 Delete an airport by id (admin only).
 
 ### Airlines Overview (api/airlines)
 
 #### GET api/airlines
-List airlines.
+List all airlines.
 
 #### POST api/airlines
 Add new airline (admin only).
 
-#### Delete api/airlines
+#### DELETE api/airlines
 Delete an airline by id (admin only).
 
 ### Routes Overview (api/routes)
 
 Routes represent the logical connections between two airports operated by an airline. They define which origin-destination pairs exist, but do not contain information about specific dates or times.
 
-#### GET api/
+#### GET api/routes
 List all routes.
 
 #### POST api/routes
 Add new route (admin only).
 
-#### Delete api/routes
+#### DELETE api/routes
 Delete a route by id (admin only).
 
 ### flights Overview (api/flights)
@@ -119,10 +119,10 @@ Delete a route by id (admin only).
 Flights are specific instances of a route occurring at a particular date and time.
 
 #### GET api/flights?origin=X&dest=Y
-List possible flights from airport with id X to airport with id Y, or all flights if no parameters are provided.
+List all possible flights from airport with id X to airport with id Y, or all flights if no parameters are provided.
 
 #### POST api/flights
 Add new flight (admin only).
 
-#### Delete api/flights
+#### DELETE api/flights
 Delete a flight by id (admin only).
