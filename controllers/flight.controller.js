@@ -1,16 +1,14 @@
-import { getAll } from '../helpers/getAll.js'
+import { getAll, getAllDirectFlightsFromTo, getAllFlightsWithRoutesInfo } from '../helpers/getAll.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
-import pool from '../utils/db.js'
 
-
-const buildGraph = (routes) => {
+const buildGraph = (flights) => {
   const graph = {}
 
-  // Each airport ID maps to an array of routes originating from it
-  routes.forEach(r => {
-    if (!graph[r.origin_id]) graph[r.origin_id] = []
-    graph[r.origin_id].push(r)
+  // Each airport ID maps to an array of flights originating from it
+  flights.forEach(f => {
+    if (!graph[f.origin_id]) graph[f.origin_id] = []
+    graph[f.origin_id].push(f)
   })
   return graph
 }
@@ -22,22 +20,25 @@ const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph)
 
   while (queue.length > 0) {
     const { path, totalDuration, totalPrice, routeList } = queue.shift()
-    const last = path[path.length - 1]
-
-    if (last === destinationId && routeList.length > 1) {
+    const currentOriginId = path[path.length - 1]
+    const previousFlight = routeList.length > 0 ? routeList[routeList.length-1] : null
+    
+    if (currentOriginId === destinationId && routeList.length > 1) {
       paths.push({ path, totalDuration, totalPrice, routeList })
       continue
     }
+    
+    if (!graph[currentOriginId]) continue
+    
+    for (const flight of graph[currentOriginId]) {
+      const arrivalBeforeDeparture = !previousFlight || previousFlight.arrival_time < flight.departure_time
 
-    if (!graph[last]) continue
-
-    for (const r of graph[last]) {
-      if (!path.includes(r.destination_id) && path.length < maxStops) {
+      if (!path.includes(flight.destination_id) && arrivalBeforeDeparture && path.length < maxStops) {
         queue.push({
-          path: [...path, r.destination_id],
-          totalDuration: totalDuration + parseInt(r.duration),
-          totalPrice: totalPrice + parseFloat(r.price),
-          routeList: [...routeList, r]
+          path: [...path, flight.destination_id],
+          totalDuration: totalDuration + parseInt(flight.duration), 
+          totalPrice: totalPrice + parseFloat(flight.price),
+          routeList: [...routeList, flight]
         })
       }
     }
@@ -50,31 +51,23 @@ export const getFlights = async (req, res) => {
   const { origin, destination } = req.query
   
   try {
-    // Case 1: return all flights if no query provided
+    // Return all flights if no query provided
     if (!origin || !destination) {
-      const result = await pool.query(`
-        SELECT f.id AS flight_id, r.origin_id, r.destination_id, 
-               f.departure_time, f.arrival_time, r.price, r.airline_id
-        FROM flights f
-        JOIN routes r ON f.route_id = r.id
-      `)
-      return res.json(result.rows)
+      const flights = await getAll('flights')
+      return res.json(flights)
     }
 
-    // Case 2: look for direct flights first
-    const direct = await pool.query(
-      `
-      SELECT f.id AS flight_id, r.origin_id, r.destination_id, 
-             f.departure_time, f.arrival_time, r.price, r.airline_id
-      FROM flights f
-      JOIN routes r ON f.route_id = r.id
-      WHERE r.origin_id = $1 AND r.destination_id = $2
-      `,
-      [origin, destination]
-    )
-    if (direct.rows.length > 0) return res.json({ type: 'direct', flights: direct.rows })
+    // Look for direct flights first
+    const originId = parseInt(origin)
+    const destinationId = parseInt(destination)
+    const direct = await getAllDirectFlightsFromTo(originId, destinationId)
   
-    // Case 3: ...
+    // Find multi-leg flights
+    const flightsWithRoutesInfo = await getAllFlightsWithRoutesInfo()
+    const graph = buildGraph(flightsWithRoutesInfo)
+    const multiLegRoutes = findPaths(graph, originId, destinationId)
+
+    return res.json({ direct, multiLegRoutes })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
@@ -84,6 +77,8 @@ export const addFlight = async (req, res) => {
   const { routeId, departureTime, arrivalTime } = req.body
   
   try {
+    // todo: validate departure < arrival
+
     const newFlight = await createEntity(
       'flights',
       ['route_id', 'departure_time', 'arrival_time'],

@@ -42,10 +42,11 @@ CREATE TABLE routes (
 CREATE TABLE flights (
   id SERIAL PRIMARY KEY,
   route_id INT NOT NULL,
-  departure_time INT NOT NULL,
-  arrival_time INT NOT NULL,
+  departure_time TIMESTAMP NOT NULL,
+  arrival_time TIMESTAMP NOT NULL,
 
-  CONSTRAINT fk_route FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE
+  CONSTRAINT fk_route FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE,
+  CONSTRAINT chk_arrival_after_departure CHECK (arrival_time > departure_time)
 );
 
 CREATE TABLE admins (
