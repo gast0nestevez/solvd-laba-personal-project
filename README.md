@@ -19,6 +19,10 @@
     - [GET api/routes](#get-apiroutes)
     - [POST api/routes](#post-apiroutes)
     - [DELETE api/routes](#delete-apiroutes)
+  - [Flights Overview (api/flights)](#flights-overview-apiroutes)
+    - [GET api/flights](#get-apiflights)
+    - [POST api/flights](#post-apiflights)
+    - [DELETE api/flights](#delete-apiflights)
 
 ## Overview
 
@@ -99,11 +103,26 @@ Delete an airline by id (admin only).
 
 ### Routes Overview (api/routes)
 
-#### GET api/routes?origin=X&dest=Y
-List possible routes from airport X to airport Y, or all routes if no parameters are provided.
+Routes represent the logical connections between two airports operated by an airline. They define which origin-destination pairs exist, but do not contain information about specific dates or times.
+
+#### GET api/
+List all routes.
 
 #### POST api/routes
 Add new route (admin only).
 
 #### Delete api/routes
 Delete a route by id (admin only).
+
+### flights Overview (api/flights)
+
+Flights are specific instances of a route occurring at a particular date and time.
+
+#### GET api/flights?origin=X&dest=Y
+List possible flights from airport with id X to airport with id Y, or all flights if no parameters are provided.
+
+#### POST api/flights
+Add new flight (admin only).
+
+#### Delete api/flights
+Delete a flight by id (admin only).
