@@ -1,6 +1,7 @@
 import { getAll, getAllDirectFlightsFromTo, getAllFlightsWithRoutesInfo } from '../helpers/getAll.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
+import { validateFlight } from '../helpers/validations.js'
 
 const buildGraph = (flights) => {
   const graph = {}
@@ -77,7 +78,7 @@ export const addFlight = async (req, res) => {
   const { routeId, departureTime, arrivalTime } = req.body
   
   try {
-    // todo: validate departure < arrival
+    validateFlight(departureTime, arrivalTime)
 
     const newFlight = await createEntity(
       'flights',

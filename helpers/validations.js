@@ -27,6 +27,10 @@ const assertDifferentOriginAndDestination = (originId, destinationId) => {
   if (originId === destinationId) throw new Error('Origin and destination cannot be the same')
 }
 
+const assertDepartureBeforeArrival = (departureTime, arrivalTime) => {
+  if (departureTime >= arrivalTime) throw new Error('Departure time must be earlier than arrival time')
+}
+
 export const validateAirport = (code, name, city, country, latitude, longitude) => {
   assertAllPresent(code, name, city, country, latitude, longitude) 
   assertValidTypes({code, name, city, country, latitude, longitude}, {
@@ -54,4 +58,8 @@ export const validateRoute = (originId, destinationId, duration, price, airline_
 
 export const validateAirline = (name) => {
   assertAllPresent(name) 
+}
+
+export const validateFlight = (departureTime, arrivalTime) => {
+  assertDepartureBeforeArrival(departureTime, arrivalTime)
 }
