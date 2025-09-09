@@ -16,7 +16,7 @@ const buildGraph = (flights) => {
 
 // BFS
 const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph).length) => {
-  const paths = []
+  const allPaths = []
   const queue = [{ path: [originId], totalDuration: 0, totalPrice: 0, routeList: [] }]
 
   while (queue.length > 0) {
@@ -25,8 +25,7 @@ const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph)
     const previousFlight = routeList.length > 0 ? routeList[routeList.length-1] : null
     
     if (currentOriginId === destinationId && routeList.length > 1) {
-      paths.push({ path, totalDuration, totalPrice, routeList })
-      continue
+      allPaths.push({ path, totalDuration, totalPrice, routeList })
     }
     
     if (!graph[currentOriginId]) continue
@@ -45,7 +44,7 @@ const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph)
     }
   }
 
-  return paths
+  return allPaths
 }
 
 export const getFlights = async (req, res) => {
