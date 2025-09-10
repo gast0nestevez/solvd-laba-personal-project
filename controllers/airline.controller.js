@@ -1,4 +1,4 @@
-import { getAll } from '../helpers/getAll.js'
+import { getAll, getRoutesOfAirline } from '../helpers/gets.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
 import { validateAirline } from '../helpers/validations.js'
@@ -6,7 +6,18 @@ import { validateAirline } from '../helpers/validations.js'
 export const getAirlines = async (req, res) => {
   try {
     const airlines = await getAll('airlines')
-    res.json(airlines)
+    res.json({ Airlines: airlines })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}
+
+export const getRoutesOperatedByAirline = async (req, res) => {
+  const id = parseInt(req.params.id)
+
+  try {
+    const routes = await getRoutesOfAirline(id)
+    res.json({ AirlineID: id, RoutesOperatedByAirline: routes })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }

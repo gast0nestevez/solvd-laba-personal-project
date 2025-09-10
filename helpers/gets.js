@@ -10,6 +10,11 @@ export const getAll = async (tableName) => {
   }
 }
 
+export const getRoutesOfAirline = async (airlineId) => {
+  const result = await pool.query(`SELECT * FROM routes WHERE airline_id = $1`, [airlineId])
+  return result.rows
+}
+
 export const getAllFlightsWithRoutesInfo = async () => {
   const result = await pool.query(`
     SELECT f.id AS flight_id, r.origin_id, r.destination_id, r.duration,

@@ -1,4 +1,4 @@
-import { getAll, getAllDirectFlightsFromTo, getAllFlightsWithRoutesInfo } from '../helpers/getAll.js'
+import { getAll, getAllDirectFlightsFromTo, getAllFlightsWithRoutesInfo } from '../helpers/gets.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
 import { validateFlight } from '../helpers/validations.js'

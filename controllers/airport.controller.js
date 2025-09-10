@@ -1,4 +1,4 @@
-import { getAll } from '../helpers/getAll.js'
+import { getAll } from '../helpers/gets.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
 import { validateAirport } from '../helpers/validations.js'
@@ -6,7 +6,7 @@ import { validateAirport } from '../helpers/validations.js'
 export const getAirports = async (req, res) => {
   try {
     const airports = await getAll('airports')
-    res.json(airports)
+    res.json({ Airports: airports })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }

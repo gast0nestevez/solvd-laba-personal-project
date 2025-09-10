@@ -13,6 +13,7 @@
     - [`DELETE /api/airports`](#delete-apiairportsid)
   - [Airlines](#airlines)
     - [`GET /api/airlines`](#get-apiairlines)
+    - [`GET /api/airlines/id`](#get-apiairlinesid)
     - [`POST /api/airlines`](#post-apiairlines)
     - [`DELETE /api/airlines`](#delete-apiairlinesid)
   - [Routes](#routes)
@@ -102,6 +103,9 @@ Delete an airport by ID (admin only).
 
 #### `GET /api/airlines`
 List all airlines.
+
+#### `GET /api/airlines/:id`
+List all routes operated by the airline with the specified ID.
 
 #### `POST /api/airlines`
 Add a new airline (admin only).
