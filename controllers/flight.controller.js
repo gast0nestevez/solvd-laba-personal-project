@@ -1,7 +1,15 @@
-import { getAll, getAllDirectFlightsFromTo, getAllFlightsWithRoutesInfo } from '../helpers/gets.js'
+import { getFlightsWithFilters } from '../helpers/gets.js'
 import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
 import { validateFlight } from '../helpers/validations.js'
+
+const parseDate = (date) => {
+  if (date) {
+    const [dd, mm, yyyy] = date.split('-').map(Number)
+    const parsedDate = new Date(Date.UTC(yyyy, mm - 1, dd, 0, 0, 0))
+    return parsedDate.toISOString()
+  }
+}
 
 const buildGraph = (flights) => {
   const graph = {}
@@ -24,7 +32,7 @@ const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph)
     const currentOriginId = path[path.length - 1]
     const previousFlight = routeList.length > 0 ? routeList[routeList.length-1] : null
     
-    if (currentOriginId === destinationId && routeList.length > 1) {
+    if (currentOriginId === destinationId) {
       allPaths.push({ path, totalDuration, totalPrice, routeList })
     }
     
@@ -48,26 +56,22 @@ const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph)
 }
 
 export const getFlights = async (req, res) => {
-  const { origin, destination } = req.query
-  
+  const { origin, destination, date } = req.query
+  const originId = parseInt(origin)
+  const destinationId = parseInt(destination)
+  const departureDate = parseDate(date)
+
   try {
+    const allFlights = await getFlightsWithFilters({ departureDate: departureDate })
+
     // Return all flights if no query provided
-    if (!origin || !destination) {
-      const flights = await getAll('flights')
-      return res.json(flights)
-    }
+    if (!origin || !destination) return res.json({ allFlights: allFlights })
+    
+    // Find direct and multi-leg flights
+    const graph = buildGraph(allFlights)
+    const allFlightsFromOriginToDestination = findPaths(graph, originId, destinationId)
 
-    // Look for direct flights first
-    const originId = parseInt(origin)
-    const destinationId = parseInt(destination)
-    const direct = await getAllDirectFlightsFromTo(originId, destinationId)
-  
-    // Find multi-leg flights
-    const flightsWithRoutesInfo = await getAllFlightsWithRoutesInfo()
-    const graph = buildGraph(flightsWithRoutesInfo)
-    const multiLegRoutes = findPaths(graph, originId, destinationId)
-
-    return res.json({ direct, multiLegRoutes })
+    return res.json({ allFlightsFromOriginToDestination })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
@@ -97,7 +101,7 @@ export const deleteFlight = async (req, res) => {
     const flight = await deleteEntity('flights', id)
     if (!flight) return res.status(404).json({ message: 'Flight not found' })
 
-    res.json({ message: 'flight deleted', flight })
+    res.json({ message: 'Flight deleted', flight })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
