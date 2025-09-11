@@ -3,6 +3,12 @@ import { createEntity } from '../helpers/createEntity.js'
 import { deleteEntity } from '../helpers/deleteEntity.js'
 import { validateFlight } from '../helpers/validations.js'
 
+const DEFAULT_LAYOVER_HOURS = 1
+
+const addHoursOfLayover = (datetime) => {
+  return new Date(datetime.getTime() + 60 * 60 * 1000 * DEFAULT_LAYOVER_HOURS)
+}
+
 const parseDate = (date) => {
   if (date) {
     const [dd, mm, yyyy] = date.split('-').map(Number)
@@ -39,7 +45,7 @@ const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph)
     if (!graph[currentOriginId]) continue
     
     for (const flight of graph[currentOriginId]) {
-      const arrivalBeforeDeparture = !previousFlight || previousFlight.arrival_time < flight.departure_time
+      const arrivalBeforeDeparture = !previousFlight || addHoursOfLayover(previousFlight.arrival_time) < flight.departure_time
 
       if (!path.includes(flight.destination_id) && arrivalBeforeDeparture && path.length < maxStops) {
         queue.push({
