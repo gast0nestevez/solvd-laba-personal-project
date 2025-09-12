@@ -10,20 +10,20 @@
   - [Airports](#airports)
     - [`GET /api/airports`](#get-apiairports)
     - [`POST /api/airports`](#post-apiairports)
-    - [`DELETE /api/airports`](#delete-apiairportsid)
+    - [`DELETE /api/airports/:id`](#delete-apiairportsid)
   - [Airlines](#airlines)
     - [`GET /api/airlines`](#get-apiairlines)
-    - [`GET /api/airlines/id`](#get-apiairlinesid)
+    - [`GET /api/airlines/:id`](#get-apiairlinesid)
     - [`POST /api/airlines`](#post-apiairlines)
-    - [`DELETE /api/airlines`](#delete-apiairlinesid)
+    - [`DELETE /api/airlines/:id`](#delete-apiairlinesid)
   - [Routes](#routes)
     - [`GET /api/routes`](#get-apiroutes)
     - [`POST /api/routes`](#post-apiroutes)
-    - [`DELETE /api/routes`](#delete-apiroutesid)
+    - [`DELETE /api/routes/:id`](#delete-apiroutesid)
   - [Flights](#flights)
     - [`GET /api/flights`](#get-apiflights)
     - [`POST /api/flights`](#post-apiflights)
-    - [`DELETE /api/flights`](#delete-apiflightsid)
+    - [`DELETE /api/flights/:id`](#delete-apiflightsid)
 
 ## Overview
 
@@ -96,6 +96,21 @@ List all airports.
 #### `POST /api/airports`
 Add a new airport (admin only).
 
+```
+POST /register
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "code": "HND",
+  "name": "Tokyo Haneda",
+  "city": "Tokyo",
+  "country": "Japan",
+  "latitude": 35.5494,
+  "longitude": 139.7798
+}
+```
+
 #### `DELETE /api/airports/:id`
 Delete an airport by ID (admin only).
 
@@ -110,6 +125,16 @@ List all routes operated by the airline with the specified ID.
 #### `POST /api/airlines`
 Add a new airline (admin only).
 
+```
+POST /register
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "name": "American Airlines"
+}
+```
+
 #### `DELETE /api/airlines/:id`
 Delete an airline by ID (admin only).
 
@@ -122,6 +147,20 @@ List all routes.
 
 #### `POST /api/routes`
 Add a new route (admin only).
+
+```
+POST /register
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "originId": 5,
+  "destinationId": 4,
+  "duration": 100,
+  "price": 500,
+  "airlineId": 3
+}
+```
 
 #### `DELETE /api/routes/:id`
 Delete a route by ID (admin only).
@@ -138,6 +177,18 @@ List possible flights.
 
 #### `POST /api/flights`
 Add a new flight (admin only).
+
+```
+POST /register
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "routeId": 6,
+  "departureTime": "2025-09-08 19:00:00",
+  "arrivalTime": "2025-09-09 02:30:00"
+}
+```
 
 #### `DELETE /api/flights/:id`
 Delete a flight by ID (admin only).
