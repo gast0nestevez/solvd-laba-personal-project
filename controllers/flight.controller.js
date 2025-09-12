@@ -4,6 +4,7 @@ import { deleteEntity } from '../helpers/deleteEntity.js'
 import { validateFlight } from '../helpers/validations.js'
 
 const DEFAULT_LAYOVER_HOURS = 1
+const DEFAULT_MAX_STOPOVERS = 3
 
 const addHoursOfLayover = (datetime) => {
   return new Date(datetime.getTime() + 60 * 60 * 1000 * DEFAULT_LAYOVER_HOURS)
@@ -29,7 +30,7 @@ const buildGraph = (flights) => {
 }
 
 // BFS
-const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph).length) => {
+const findPaths = (graph, originId, destinationId) => {
   const allPaths = []
   const queue = [{ path: [originId], totalDuration: 0, totalPrice: 0, routeList: [] }]
 
@@ -45,9 +46,11 @@ const findPaths = (graph, originId, destinationId, maxStops = Object.keys(graph)
     if (!graph[currentOriginId]) continue
     
     for (const flight of graph[currentOriginId]) {
-      const arrivalBeforeDeparture = !previousFlight || addHoursOfLayover(previousFlight.arrival_time) < flight.departure_time
+      const isUnvisitedDestination = !path.includes(flight.destination_id)
+      const canConnectFromPreviousFlight = !previousFlight || addHoursOfLayover(previousFlight.arrival_time) < flight.departure_time
+      const withinMaxStopovers = path.length <= DEFAULT_MAX_STOPOVERS
 
-      if (!path.includes(flight.destination_id) && arrivalBeforeDeparture && path.length < maxStops) {
+      if (isUnvisitedDestination && canConnectFromPreviousFlight && withinMaxStopovers) {
         queue.push({
           path: [...path, flight.destination_id],
           totalDuration: totalDuration + parseInt(flight.duration), 
