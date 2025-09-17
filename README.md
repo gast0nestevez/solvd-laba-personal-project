@@ -4,6 +4,8 @@
 
 - [Overview](#overview)
 - [Setup](#setup)
+  - [With Docker](#with-docker)
+  - [With npm](#with-npm)
 - [Authentication](#authentication)
 - [Database Schema](#database-schema)
 - [Endpoints](#endpoints)
@@ -39,14 +41,7 @@ This project can be especially useful for applications like virtual travel agent
 
 ## Setup
 
-1. Clone this repository.
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Create a `.env` file in the root with the following keys:
+1. Create a `.env` file in the root with the following keys:
 
    ```env
    PORT=3000
@@ -67,7 +62,36 @@ This project can be especially useful for applications like virtual travel agent
    TZ=UTC
    ```
 
-4. Run the server:
+### With Docker
+
+2. Make sure you have Docker and Docker Compose installed on your machine.
+
+3. Build and start the containers:
+   ```bash
+   docker compose up --build
+   ```
+
+4. Access the API at:
+
+   ```
+   http://localhost:3000
+   ```
+
+5. To stop the containers:
+
+   ```
+   docker compose down
+   ```
+
+### With npm 
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Run the server:
 
    ```bash
    npm start
