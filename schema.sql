@@ -1,14 +1,7 @@
 -- Run from terminal using
 -- `psql -d database_name -f schema.sql`
 
--- Drop existing tables if they exist (for clean setup)
-DROP TABLE IF EXISTS routes CASCADE;
-DROP TABLE IF EXISTS flights CASCADE;
-DROP TABLE IF EXISTS airlines CASCADE;
-DROP TABLE IF EXISTS airports CASCADE;
-DROP TABLE IF EXISTS admins CASCADE;
-
-CREATE TABLE airports (
+CREATE TABLE IF NOT EXISTS airports (
   id SERIAL PRIMARY KEY,
   code VARCHAR(10) NOT NULL,
   name VARCHAR(150) NOT NULL,
@@ -18,12 +11,12 @@ CREATE TABLE airports (
   longitude NUMERIC(9,6) NOT NULL
 );
 
-CREATE TABLE airlines (
+CREATE TABLE IF NOT EXISTS airlines (
   id SERIAL PRIMARY KEY,
   name VARCHAR(150) NOT NULL
 );
 
-CREATE TABLE routes (
+CREATE TABLE IF NOT EXISTS routes (
   id SERIAL PRIMARY KEY,
   origin_id INT NOT NULL,
   destination_id INT NOT NULL,
@@ -39,7 +32,7 @@ CREATE TABLE routes (
   CONSTRAINT chk_price_positive CHECK (price > 0)
 );
 
-CREATE TABLE flights (
+CREATE TABLE IF NOT EXISTS flights (
   id SERIAL PRIMARY KEY,
   route_id INT NOT NULL,
   departure_time TIMESTAMP NOT NULL,
@@ -49,13 +42,13 @@ CREATE TABLE flights (
   CONSTRAINT chk_arrival_after_departure CHECK (arrival_time > departure_time)
 );
 
-CREATE TABLE admins (
+CREATE TABLE IF NOT EXISTS admins (
   id SERIAL PRIMARY KEY,
   username VARCHAR(50) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL
 );
 
 -- Useful indexes
-CREATE INDEX idx_routes_airline ON routes(airline_id);
-CREATE INDEX idx_routes_origin ON routes(origin_id);
-CREATE INDEX idx_routes_destination ON routes(destination_id);
+CREATE INDEX IF NOT EXISTS idx_routes_airline ON routes(airline_id);
+CREATE INDEX IF NOT EXISTS idx_routes_origin ON routes(origin_id);
+CREATE INDEX IF NOT EXISTS idx_routes_destination ON routes(destination_id);

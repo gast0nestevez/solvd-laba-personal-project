@@ -51,8 +51,11 @@ This project can be especially useful for applications like virtual travel agent
    ```env
    PORT=3000
 
-    DB_USER=yourDBUser
-    DB_PASSWORD=yourDBPassword
+   DB_HOST=localhost
+   DB_USER=yourDBUser
+   DB_PASSWORD=yourDBPassword
+   DB_NAME=my_api
+   DB_PORT=5432
 
    ADMIN_USERNAME=admin
    ADMIN_PASSWORD=supersecret
@@ -60,8 +63,8 @@ This project can be especially useful for applications like virtual travel agent
    JWT_SECRET=myjwtsecret
    JWT_EXPIRES_IN=3600
 
-    # For simpler timestamps handling in Node
-    TZ=UTC
+   # For simpler timestamps handling in Node
+   TZ=UTC
    ```
 
 4. Run the server:
