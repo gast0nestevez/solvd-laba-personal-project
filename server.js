@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import routes from './routes/index.js'
+import './init-db.js'
 
 dotenv.config()
 

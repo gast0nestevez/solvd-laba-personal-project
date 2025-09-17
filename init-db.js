@@ -76,7 +76,7 @@ const createAdmin = async () => {
   await client.end()
 }
 
-async function initDb() {
+export async function initDb() {
   try {
     await createDatabaseIfNotExists()
     await createSchema()
