@@ -21,8 +21,8 @@ const buildGraph = (flights) => {
 
   // Each airport ID maps to an array of flights originating from it
   flights.forEach(f => {
-    if (!graph[f.routeId]) graph[f.routeId] = []
-    graph[f.routeId].push(f)
+    if (!graph[f.originId]) graph[f.originId] = []
+    graph[f.originId].push(f)
   })
   return graph
 }
@@ -44,7 +44,7 @@ const findPaths = (graph, originId, destinationId) => {
     if (!graph[currentOriginId]) continue
 
     for (const flight of graph[currentOriginId]) {
-      const isUnvisitedDestination = !path.includes(flight.destination_id)
+      const isUnvisitedDestination = !path.includes(flight.destinationId)
       const canConnectFromPreviousFlight = !previousFlight || addHoursOfLayover(previousFlight.arrivalTime) < flight.departureTime
       const withinMaxStopovers = path.length <= DEFAULT_MAX_STOPOVERS
 

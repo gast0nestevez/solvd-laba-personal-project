@@ -33,7 +33,7 @@ const createDatabaseIfNotExists = async () => {
 }
 
 const createSchema = async () => {
-  const sql = fs.readFileSync('schema.sql', 'utf8')
+  const sql = fs.readFileSync('./src/schema.sql', 'utf8')
 
   const client = new Client({
     host: process.env.DB_HOST,

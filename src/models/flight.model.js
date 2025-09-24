@@ -10,16 +10,17 @@ export class Flight {
 
   static async getAll({ departureDate } = {}) {
     let query = `SELECT 
-      f.id AS flight_id,
-      r.origin_id,
-      r.destination_id,
+      f.id,
+      f.route_id AS "routeId",
+      r.origin_id AS "originId",
+      r.destination_id AS "destinationId",
       r.duration,
-      f.departure_time,
-      f.arrival_time,
+      f.departure_time AS "departureTime",
+      f.arrival_time AS "arrivalTime",
       r.price,
-      r.airline_id
-      FROM flights f
-      JOIN routes r ON f.route_id = r.id`
+      r.airline_id AS "airlineId"
+    FROM flights f
+    JOIN routes r ON f.route_id = r.id`
     const values = []
 
     if (departureDate) {
@@ -30,14 +31,17 @@ export class Flight {
     query += ' ORDER BY departure_time'
 
     const result = await pool.query(query, values)
-    return result.rows.map(row => new Flight(row))
+    return result.rows
   }
 
   static async create({ routeId, departureTime, arrivalTime }) {
     const query = `
       INSERT INTO flights (route_id, departure_time, arrival_time)
       VALUES ($1, $2, $3)
-      RETURNING *`
+      RETURNING 
+        route_id AS "routeId",
+        departure_time AS "departureTime",
+        arrival_time AS "arrivalTime"`
     const values = [routeId, departureTime, arrivalTime]
 
     const result = await pool.query(query, values)
@@ -45,7 +49,12 @@ export class Flight {
   }
 
   static async delete(id) {
-    const query = 'DELETE FROM flights WHERE id = $1 RETURNING *'
+    const query = `DELETE
+      FROM flights WHERE id = $1
+      RETURNING 
+        route_id AS "routeId",
+        departure_time AS "departureTime",
+        arrival_time AS "arrivalTime"`
     const result = await pool.query(query, [id])
     return result.rows[0] ? new Flight(result.rows[0]) : null
   }
