@@ -1,6 +1,4 @@
-import { getFlightsWithFilters } from '../helpers/gets.js'
-import { createEntity } from '../helpers/createEntity.js'
-import { deleteEntity } from '../helpers/deleteEntity.js'
+import { Flight } from '../models/flight.model.js'
 import { validateFlight } from '../helpers/validations.js'
 
 const DEFAULT_LAYOVER_HOURS = 1
@@ -23,8 +21,8 @@ const buildGraph = (flights) => {
 
   // Each airport ID maps to an array of flights originating from it
   flights.forEach(f => {
-    if (!graph[f.origin_id]) graph[f.origin_id] = []
-    graph[f.origin_id].push(f)
+    if (!graph[f.routeId]) graph[f.routeId] = []
+    graph[f.routeId].push(f)
   })
   return graph
 }
@@ -37,22 +35,22 @@ const findPaths = (graph, originId, destinationId) => {
   while (queue.length > 0) {
     const { path, totalDuration, totalPrice, routeList } = queue.shift()
     const currentOriginId = path[path.length - 1]
-    const previousFlight = routeList.length > 0 ? routeList[routeList.length-1] : null
-    
+    const previousFlight = routeList.length > 0 ? routeList[routeList.length - 1] : null
+
     if (currentOriginId === destinationId) {
       allPaths.push({ path, totalDuration, totalPrice, routeList })
     }
-    
+
     if (!graph[currentOriginId]) continue
-    
+
     for (const flight of graph[currentOriginId]) {
       const isUnvisitedDestination = !path.includes(flight.destination_id)
-      const canConnectFromPreviousFlight = !previousFlight || addHoursOfLayover(previousFlight.arrival_time) < flight.departure_time
+      const canConnectFromPreviousFlight = !previousFlight || addHoursOfLayover(previousFlight.arrivalTime) < flight.departureTime
       const withinMaxStopovers = path.length <= DEFAULT_MAX_STOPOVERS
 
       if (isUnvisitedDestination && canConnectFromPreviousFlight && withinMaxStopovers) {
         queue.push({
-          path: [...path, flight.destination_id],
+          path: [...path, flight.destinationId],
           totalDuration: totalDuration + parseInt(flight.duration), 
           totalPrice: totalPrice + parseFloat(flight.price),
           routeList: [...routeList, flight]
@@ -71,11 +69,11 @@ export const getFlights = async (req, res) => {
   const departureDate = parseDate(date)
 
   try {
-    const allFlights = await getFlightsWithFilters({ departureDate: departureDate })
+    const allFlights = await Flight.getAll({ departureDate })
 
     // Return all flights if no query provided
-    if (!origin || !destination) return res.json({ allFlights: allFlights })
-    
+    if (!origin || !destination) return res.json({ allFlights })
+
     // Find direct and multi-leg flights
     const graph = buildGraph(allFlights)
     const allFlightsFromOriginToDestination = findPaths(graph, originId, destinationId)
@@ -88,15 +86,10 @@ export const getFlights = async (req, res) => {
 
 export const addFlight = async (req, res) => {
   const { routeId, departureTime, arrivalTime } = req.body
-  
+
   try {
     validateFlight(departureTime, arrivalTime)
-
-    const newFlight = await createEntity(
-      'flights',
-      ['route_id', 'departure_time', 'arrival_time'],
-      [routeId, departureTime, arrivalTime]
-    )
+    const newFlight = await Flight.create({ routeId, departureTime, arrivalTime })
     res.status(201).json(newFlight)
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -107,7 +100,7 @@ export const deleteFlight = async (req, res) => {
   const id = parseInt(req.params.id)
 
   try {
-    const flight = await deleteEntity('flights', id)
+    const flight = await Flight.delete(id)
     if (!flight) return res.status(404).json({ message: 'Flight not found' })
 
     res.json({ message: 'Flight deleted', flight })

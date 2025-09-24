@@ -1,11 +1,9 @@
-import { getAll, getRoutesOfAirline } from '../helpers/gets.js'
-import { createEntity } from '../helpers/createEntity.js'
-import { deleteEntity } from '../helpers/deleteEntity.js'
+import { Airline } from '../models/airline.model.js'
 import { validateAirline } from '../helpers/validations.js'
 
 export const getAirlines = async (req, res) => {
   try {
-    const airlines = await getAll('airlines')
+    const airlines = await Airline.getAll()
     res.json({ Airlines: airlines })
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -16,7 +14,7 @@ export const getRoutesOperatedByAirline = async (req, res) => {
   const id = parseInt(req.params.id)
 
   try {
-    const routes = await getRoutesOfAirline(id)
+    const routes = await Airline.getRoutes(id)
     res.json({ AirlineID: id, RoutesOperatedByAirline: routes })
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -25,14 +23,10 @@ export const getRoutesOperatedByAirline = async (req, res) => {
 
 export const createAirline = async (req, res) => {
   const { name } = req.body
-  
+
   try {
     validateAirline(name)
-    const newAirline = await createEntity(
-      'airlines',
-      ['name'],
-      [name]
-    )
+    const newAirline = await Airline.create({ name })
     res.status(201).json(newAirline)
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -43,9 +37,8 @@ export const deleteAirline = async (req, res) => {
   const id = parseInt(req.params.id)
 
   try {
-    const airline = await deleteEntity('airlines', id)
+    const airline = await Airline.delete(id)
     if (!airline) return res.status(404).json({ message: 'Airline not found' })
-
     res.json({ message: 'Airline deleted', airline })
   } catch (err) {
     res.status(500).json({ error: err.message })

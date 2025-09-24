@@ -1,3 +1,5 @@
+import pool from '../utils/db.js'
+
 export class Route {
   constructor({ id, originId, destinationId, duration, price, airlineId }) {
     this.id = id
@@ -7,72 +9,26 @@ export class Route {
     this.price = price
     this.airlineId = airlineId
   }
-}
 
-// In-memory list of example routes
-export const routes = [
-  new Route({
-    id: 1,
-    originId: 1,   // JFK
-    destinationId: 2,     // LHR
-    duration: 420,
-    price: 500,
-    airlineId: 1  // American Airlines
-  }),
-  new Route({
-    id: 2,
-    originId: 1,
-    destinationId: 3,
-    duration: 435,
-    price: 450,
-    airlineId: 4
-  }),
-  new Route({
-    id: 3,
-    originId: 3,
-    destinationId: 2,
-    duration: 75,
-    price: 120,
-    airlineId: 5
-  }),
-  new Route({
-    id: 4,
-    originId: 2,
-    destinationId: 4,
-    duration: 420,
-    price: 600,
-    airlineId: 5
-  }),
-  new Route({
-    id: 5,
-    originId: 5,
-    destinationId: 3,
-    duration: 70,
-    price: 110,
-    airlineId: 4
-  }),
-  new Route({
-    id: 6,
-    originId: 2,
-    destinationId: 1,
-    duration: 430,
-    price: 400,
-    airlineId: 1
-  }),
-  new Route({
-    id: 7,
-    originId: 3,
-    destinationId: 4,
-    duration: 235,
-    price: 230,
-    airlineId: 4
-  }),
-  new Route({
-    id: 8,
-    originId: 4,
-    destinationId: 5,
-    duration: 235,
-    price: 230,
-    airlineId: 4
-  }),
-]
+  static async getAll() {
+    const result = await pool.query('SELECT * FROM routes ORDER BY id')
+    return result.rows.map(row => new Route(row))
+  }
+
+  static async create({ originId, destinationId, duration, price, airlineId }) {
+    const query = `
+      INSERT INTO routes (origin_id, destination_id, duration, price, airline_id)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *`
+    const values = [originId, destinationId, duration, price, airlineId]
+
+    const result = await pool.query(query, values)
+    return new Route(result.rows[0])
+  }
+
+  static async delete(id) {
+    const query = 'DELETE FROM routes WHERE id = $1 RETURNING *'
+    const result = await pool.query(query, [id])
+    return result.rows[0] ? new Route(result.rows[0]) : null
+  }
+}

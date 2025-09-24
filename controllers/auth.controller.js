@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import bcrypt from 'bcryptjs'
 import { createToken } from '../utils/jwt.js'
-import pool from "../utils/db.js"
+import pool from '../utils/db.js'
 
 dotenv.config()
 
