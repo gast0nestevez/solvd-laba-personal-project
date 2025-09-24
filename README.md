@@ -26,6 +26,7 @@
     - [`GET /api/flights`](#get-apiflights)
     - [`POST /api/flights`](#post-apiflights)
     - [`DELETE /api/flights/:id`](#delete-apiflightsid)
+- [Tests](#tests)
 
 ## Overview
 
@@ -219,3 +220,6 @@ Authorization: Bearer <token>
 
 #### `DELETE /api/flights/:id`
 Delete a flight by ID (admin only).
+
+## Tests
+  Use `npm test` to run unit tests.
