@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals'
-import pool from '../../utils/db.js'
-import { Route } from '../../models/route.model.js'
+import pool from '../../src/utils/db.js'
+import { Route } from '../../src/models/route.model.js'
 
-jest.mock('../../utils/db.js')
+jest.mock('../../src/utils/db.js')
 
 describe('Route model', () => {
   beforeEach(() => {
@@ -59,5 +59,11 @@ describe('Route model', () => {
     expect(deleted.duration).toBe(mockRoute.duration)
     expect(deleted.price).toBe(mockRoute.price)
     expect(deleted.airlineId).toBe(mockRoute.airlineId)
+  })
+
+  test('delete returns null when route not found', async () => {
+    pool.query.mockResolvedValueOnce({ rows: [] })
+    const deleted = await Route.delete(999)
+    expect(deleted).toBeNull()
   })
 })

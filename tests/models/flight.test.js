@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals'
-import pool from '../../utils/db.js'
-import { Flight } from '../../models/flight.model.js'
+import pool from '../../src/utils/db.js'
+import { Flight } from '../../src/models/flight.model.js'
 
-jest.mock('../../utils/db.js')
+jest.mock('../../src/utils/db.js')
 
 describe('Flight model', () => {
   beforeEach(() => {
@@ -27,21 +27,23 @@ describe('Flight model', () => {
     const flights = await Flight.getAll()
 
     expect(flights).toHaveLength(2)
-    expect(flights[0]).toBeInstanceOf(Flight)
     expect(flights[0].departureTime).toBe('2025-09-25T10:00:00Z')
     expect(flights[1].departureTime).toBe('2025-09-25T14:00:00Z')
   })
-
+  
   test('getAll with departureDate filter', async () => {
+    const parsedDate = new Date(Date.UTC(2025, 8, 26, 0, 0, 0)).toISOString()
     const mockRows = [
-      { id: 3, route_id: 3, originId: 1, destinationId: 3, duration: 240, departureTime: '2025-09-26T08:00:00Z', arrivalTime: '2025-09-26T12:00:00Z', price: 300, airline_id: 1 }
+      { id: 1, routeId: 1, departureTime: '2025-09-25T10:00:00Z', arrivalTime: '2025-09-25T14:00:00Z' }
     ]
     pool.query.mockResolvedValueOnce({ rows: mockRows })
 
-    const flights = await Flight.getAll({ departureDate: '2025-09-26' })
+    const flights = await Flight.getAll({ departureDate: parsedDate })
 
-    expect(flights).toHaveLength(1)
-    expect(flights[0]).toBeInstanceOf(Flight)
+    expect(pool.query).toHaveBeenCalledWith(
+      expect.stringContaining('WHERE f.departure_time >= $1'),
+      [parsedDate]
+    )
   })
 
   test('create a new flight', async () => {

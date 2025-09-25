@@ -24,7 +24,7 @@ export class Flight {
     const values = []
 
     if (departureDate) {
-      query += ' WHERE DATE(f.departure_time) = $1'
+      query += ' WHERE f.departure_time >= $1'
       values.push(departureDate)
     }
 

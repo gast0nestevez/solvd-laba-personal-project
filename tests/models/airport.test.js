@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals'
-import pool from '../../utils/db.js'
-import { Airport } from '../../models/airport.model.js'
+import pool from '../../src/utils/db.js'
+import { Airport } from '../../src/models/airport.model.js'
 
-jest.mock('../../utils/db.js')
+jest.mock('../../src/utils/db.js')
 
 describe('Airport model', () => {
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe('Airport model', () => {
     expect(newAirport.longitude).toBe(input.longitude)
   })
 
-  test('delete an airport', async () => {
+  test('delete an airport and return it', async () => {
     const mockAirport = { id: 1, code: 'EZE', name: 'Ministro Pistarini', city: 'Buenos Aires', country: 'Argentina', latitude: -34.82, longitude: -58.53 }
     pool.query.mockResolvedValueOnce({ rows: [mockAirport] })
 
@@ -59,5 +59,11 @@ describe('Airport model', () => {
     expect(deleted.country).toBe(mockAirport.country)
     expect(deleted.latitude).toBe(mockAirport.latitude)
     expect(deleted.longitude).toBe(mockAirport.longitude)
+  })
+
+  test('delete returns null when airport not found', async () => {
+    pool.query.mockResolvedValueOnce({ rows: [] })
+    const deleted = await Airport.delete(999)
+    expect(deleted).toBeNull()
   })
 })

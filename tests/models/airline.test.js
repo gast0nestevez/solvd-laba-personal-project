@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals'
-import pool from '../../utils/db.js'
-import { Airline } from '../../models/airline.model.js'
+import pool from '../../src/utils/db.js'
+import { Airline } from '../../src/models/airline.model.js'
 
-jest.mock('../../utils/db.js')
+jest.mock('../../src/utils/db.js')
 
 describe('Airline model', () => {
   beforeEach(() => {
@@ -33,6 +33,12 @@ describe('Airline model', () => {
     expect(airlines[1].name).toBe('Delta Airlines')
   })
 
+  test('getRoutes returns empty array if no routes found', async () => {
+    pool.query.mockResolvedValueOnce({ rows: [] })
+    const routes = await Airline.getRoutes(99)
+    expect(routes).toEqual([])
+  })
+
   test('create a new airline', async () => {
     const input = { name: 'Iberia' }
     pool.query.mockResolvedValueOnce({ rows: [{ id: 3, ...input }] })
@@ -44,7 +50,7 @@ describe('Airline model', () => {
     expect(newAirline.name).toBe(input.name)
   })
 
-  test('delete an airline', async () => {
+  test('delete an airline and return it', async () => {
     const mockAirline = { id: 1, name: 'Aerolineas Argentinas' }
     pool.query.mockResolvedValueOnce({ rows: [mockAirline] })
 
@@ -53,5 +59,11 @@ describe('Airline model', () => {
     expect(deleted).toBeInstanceOf(Airline)
     expect(deleted.id).toBe(1)
     expect(deleted.name).toBe(mockAirline.name)
+  })
+
+  test('delete returns null when airline not found', async () => {
+    pool.query.mockResolvedValueOnce({ rows: [] })
+    const deleted = await Airline.delete(999)
+    expect(deleted).toBeNull()
   })
 })
