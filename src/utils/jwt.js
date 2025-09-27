@@ -37,11 +37,12 @@ export const createToken = (payload, { secret, expiresInSeconds = 3600 }) => {
 
 export const verifyToken = (token, { secret }) => {
   if (!secret) throw new Error('JWT secret required')
-  if (!token || typeof token !== 'string' || token.split('.').length !== 3) {
-    throw new Error('Invalid token format')
-  }
+  if (!token || typeof token !== 'string') throw new Error('Invalid token format')
 
-  const [encodedHeader, encodedPayload, signature] = token.split('.')
+  const parts = token.split('.')
+  if (parts.length !== 3 || parts.some(p => !p)) throw new Error('Invalid token format')
+
+  const [encodedHeader, encodedPayload, signature] = parts
   const signingInput = `${encodedHeader}.${encodedPayload}`
   const expectedSig = signHS256(signingInput, secret)
 
