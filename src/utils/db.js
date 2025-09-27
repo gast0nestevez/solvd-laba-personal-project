@@ -13,8 +13,6 @@ async function createPoolWithRetry(config) {
   while (retries > 0) {
     try {
       const pool = new Pool(config)
-      
-      await pool.query('SELECT 1')
       console.log('Connected to Postgres')
       return pool
     } catch (err) {
