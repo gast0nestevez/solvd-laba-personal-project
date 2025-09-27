@@ -1,8 +1,17 @@
 import { jest } from '@jest/globals'
+
+jest.mock('../../src/utils/db.js', () => {
+  return {
+    __esModule: true,
+    default: {
+      query: jest.fn(),
+      end: jest.fn()
+    }
+  }
+})
+
 import pool from '../../src/utils/db.js'
 import { Flight } from '../../src/models/flight.model.js'
-
-jest.mock('../../src/utils/db.js')
 
 describe('Flight model', () => {
   beforeEach(() => {

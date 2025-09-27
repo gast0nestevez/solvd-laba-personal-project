@@ -1,8 +1,17 @@
 import { jest } from '@jest/globals'
+
+jest.mock('../../src/utils/db.js', () => {
+  return {
+    __esModule: true,
+    default: {
+      query: jest.fn(),
+      end: jest.fn()
+    }
+  }
+})
+
 import pool from '../../src/utils/db.js'
 import { Route } from '../../src/models/route.model.js'
-
-jest.mock('../../src/utils/db.js')
 
 describe('Route model', () => {
   beforeEach(() => {
