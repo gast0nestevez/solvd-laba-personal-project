@@ -1,2 +1,27 @@
-node_modules
+# Version control
 .git
+.gitignore
+
+# IDE config
+.vscode
+.idea
+*.swp
+
+# CI/CD
+.github
+
+# Local dependencies
+node_modules
+
+# Temp files
+*.log
+*.tmp
+
+# Builds and coverage
+dist
+build
+coverage
+
+# Environment variables
+.env
+.env.local
