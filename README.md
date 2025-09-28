@@ -222,4 +222,4 @@ Authorization: Bearer <token>
 Delete a flight by ID (admin only).
 
 ## Tests
-  Use `npm test` to run unit tests.
+  Use `npm test` to run unit tests, and `npm run test:coverage` to run with coverage.
